@@ -1,0 +1,13 @@
+[tool.poetry]
+name = "terraform-project"
+version = "0.1.0"
+description = "Projet Terraform avec Python"
+authors = ["Votre Nom <email@example.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+python-terraform = "^0.10.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
