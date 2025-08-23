@@ -1,0 +1,175 @@
+/* App.css */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.App {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.main-content {
+  flex-grow: 1;
+  width: 100%;
+}
+
+/* Navigation */
+.navigation {
+  background: white;
+  border-bottom: 2px solid #f1f5f9;
+  padding: 1rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  width: 100%;
+  margin: 0;
+}
+
+.nav-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 2rem;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.nav-button {
+  background: transparent;
+  border: 2px solid #e2e8f0;
+  color: #64748b;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nav-button:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #475569;
+  transform: translateY(-1px);
+}
+
+.nav-button.active {
+  background: linear-gradient(135deg, #ec4899, #8b5cf6);
+  border-color: #ec4899;
+  color: white;
+  box-shadow: 0 5px 15px rgba(236, 72, 153, 0.3);
+}
+
+.nav-button.new-appointment {
+  background: linear-gradient(135deg, #10b981, #059669);
+  border-color: #10b981;
+  color: white;
+  margin-left: auto;
+}
+
+.nav-button.new-appointment:hover {
+  background: linear-gradient(135deg, #059669, #047857);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+}
+
+/* Styles pour la section "no-prothesiste" */
+.no-prothesiste {
+  max-width: 600px;
+  margin: 4rem auto;
+  text-align: center;
+  background: white;
+  padding: 3rem;
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+}
+
+.no-prothesiste h2 {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.no-prothesiste p {
+  color: #666;
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.no-prothesiste .back-button {
+  background: linear-gradient(135deg, #ec4899, #8b5cf6);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.no-prothesiste .back-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(236, 72, 153, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .nav-container {
+    padding: 0 1rem;
+    justify-content: center;
+  }
+  
+  .nav-button {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .nav-button.new-appointment {
+    margin-left: 0;
+    order: -1;
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Global styles */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #f8fafc;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+button {
+  font-family: inherit;
+}
+
+input, select, textarea {
+  font-family: inherit;
+}
