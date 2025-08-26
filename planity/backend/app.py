@@ -5,9 +5,21 @@ from flask_cors import CORS
 from datetime import datetime, date, time
 import re
 from typing import Optional, List, Dict
+from dotenv import load_dotenv
+import os
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://username:password@localhost/nails_rdv'
+load_dotenv()
+db_user = os.getenv('DB_USER')
+db_pass = os.getenv('DB_PASS')
+db_name = os.getenv('DB_NAME')
+
+if db_pass == "" or db_pass is None:
+    uri = f"mysql://{db_user}@localhost/{db_name}"
+else:
+    uri = f"mysql://{db_user}:{db_pass}@localhost/{db_name}"
+
+app.config['SQLALCHEMY_DATABASE_URI'] = uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
