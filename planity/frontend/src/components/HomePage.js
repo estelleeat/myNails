@@ -1,58 +1,116 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import '../css/HomePage.css';
 
 function HomePage({ onSelectProthesiste }) {
-  const prothesistes = [
-    {
-      id: 1,
-      name: 'Sarah Martinez',
-      specialite: 'Nail Art & French Manucure',
-      experience: '5 ans d\'expérience',
-      photo: '👩‍🎨',
-      description: 'Spécialiste en nail art créatif et french manucure perfectionnée',
-      services: ['Nail Art', 'French Manucure', 'Pose Gel', 'Manucure Classique'],
-      rating: 4.9,
-      disponibilite: 'Disponible aujourd\'hui'
-    },
-    {
-      id: 2,
-      name: 'Marie Dubois',
-      specialite: 'Pose Gel & Extensions',
-      experience: '7 ans d\'expérience',
-      photo: '💅',
-      description: 'Experte en pose gel et extensions d\'ongles pour des résultats durables',
-      services: ['Pose Gel', 'Extensions', 'Réparation', 'Pédicure'],
-      rating: 4.8,
-      disponibilite: 'Disponible demain'
-    },
-    {
-      id: 3,
-      name: 'Emma Rousseau',
-      specialite: 'Soins & Pédicure',
-      experience: '4 ans d\'expérience',
-      photo: '🦶',
-      description: 'Spécialisée dans les soins complets des pieds et des mains',
-      services: ['Pédicure', 'Soins des pieds', 'Manucure Classique', 'French'],
-      rating: 4.7,
-      disponibilite: 'Disponible cette semaine'
-    }
-  ];
+  const [prothesistes, setProthesistes] = useState([]);
+  const [services, setServices] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const services = [
-    { name: 'Manucure Classique', icon: '💅', prix: 'À partir de 25€' },
-    { name: 'Pose Gel', icon: '✨', prix: 'À partir de 35€' },
-    { name: 'Nail Art', icon: '🎨', prix: 'À partir de 40€' },
-    { name: 'French Manucure', icon: '🤍', prix: 'À partir de 30€' },
-    { name: 'Pédicure', icon: '🦶', prix: 'À partir de 35€' },
-    { name: 'Extensions', icon: '💎', prix: 'À partir de 50€' }
-  ];
+  // Configuration de l'API
+  const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+
+  useEffect(() => {
+    fetchProthesistes();
+    fetchServices();
+  }, []);
+
+  const fetchProthesistes = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/prothesistes`);
+      if (!response.ok) {
+        throw new Error('Erreur lors du chargement des prothésistes');
+      }
+      const data = await response.json();
+      setProthesistes(data);
+    } catch (err) {
+      setError(err.message);
+      // Fallback avec des données statiques en cas d'erreur
+      setProthesistes([
+        {
+          id: 1,
+          name: 'Sarah Martinez',
+          specialite: 'Nail Art & French Manucure',
+          experience: '5 ans d\'expérience',
+          photo: '👩‍🎨',
+          description: 'Spécialiste en nail art créatif et french manucure perfectionnée',
+          services: ['Nail Art', 'French Manucure', 'Pose Gel', 'Manucure Classique'],
+          rating: 4.9,
+          disponibilite: 'Disponible aujourd\'hui'
+        },
+        {
+          id: 2,
+          name: 'Marie Dubois',
+          specialite: 'Pose Gel & Extensions',
+          experience: '7 ans d\'expérience',
+          photo: '💅',
+          description: 'Experte en pose gel et extensions d\'ongles pour des résultats durables',
+          services: ['Pose Gel', 'Extensions', 'Réparation', 'Pédicure'],
+          rating: 4.8,
+          disponibilite: 'Disponible demain'
+        },
+        {
+          id: 3,
+          name: 'Emma Rousseau',
+          specialite: 'Soins & Pédicure',
+          experience: '4 ans d\'expérience',
+          photo: '🦶',
+          description: 'Spécialisée dans les soins complets des pieds et des mains',
+          services: ['Pédicure', 'Soins des pieds', 'Manucure Classique', 'French'],
+          rating: 4.7,
+          disponibilite: 'Disponible cette semaine'
+        }
+      ]);
+    }
+  };
+
+  const fetchServices = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/services`);
+      if (!response.ok) {
+        throw new Error('Erreur lors du chargement des services');
+      }
+      const data = await response.json();
+      setServices(data);
+    } catch (err) {
+      // Fallback avec des données statiques
+      setServices([
+        { name: 'Manucure Classique', icon: '💅', prix: 'À partir de 25€' },
+        { name: 'Pose Gel', icon: '✨', prix: 'À partir de 35€' },
+        { name: 'Nail Art', icon: '🎨', prix: 'À partir de 40€' },
+        { name: 'French Manucure', icon: '🤍', prix: 'À partir de 30€' },
+        { name: 'Pédicure', icon: '🦶', prix: 'À partir de 35€' },
+        { name: 'Extensions', icon: '💎', prix: 'À partir de 50€' }
+      ]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSelectProthesiste = (prothesiste) => {
     onSelectProthesiste(prothesiste);
   };
 
+  if (loading) {
+    return (
+      <div className="homepage">
+        <div className="loading-container">
+          <div className="loading-spinner">💅</div>
+          <p>Chargement des prothésistes...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="homepage">
+      {/* Message d'erreur si problème avec l'API */}
+      {error && (
+        <div className="error-banner">
+          <p>⚠️ Connexion à l'API limitée. Affichage des données de démonstration.</p>
+        </div>
+      )}
+
       {/* Hero Section */}
       <section className="hero-section">
         <div className="hero-content">
@@ -70,7 +128,7 @@ function HomePage({ onSelectProthesiste }) {
               <span className="stat-label">Note moyenne</span>
             </div>
             <div className="stat-item">
-              <span className="stat-number">3</span>
+              <span className="stat-number">{prothesistes.length}</span>
               <span className="stat-label">Expertes diplômées</span>
             </div>
           </div>

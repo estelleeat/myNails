@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import HomePage from './components/HomePage';
 import AppointmentForm from './components/AppointmentForm';
 import AppointmentList from './components/AppointmentList';
@@ -10,6 +10,28 @@ function App() {
   const [currentView, setCurrentView] = useState('home'); // 'home', 'appointment', 'list'
   const [selectedProthesiste, setSelectedProthesiste] = useState(null);
   const [appointments, setAppointments] = useState([]);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+
+  // Configuration de l'API
+  const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+
+  // Charger les rendez-vous au démarrage
+  useEffect(() => {
+    fetchAppointments();
+  }, []);
+
+  const fetchAppointments = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/appointments`);
+      if (response.ok) {
+        const data = await response.json();
+        setAppointments(data);
+      }
+    } catch (error) {
+      console.error('Erreur lors du chargement des rendez-vous:', error);
+      // Continuer avec un tableau vide si l'API n'est pas disponible
+    }
+  };
 
   const handleSelectProthesiste = (prothesiste) => {
     setSelectedProthesiste(prothesiste);
@@ -17,8 +39,12 @@ function App() {
   };
 
   const handleAddAppointment = (appointment) => {
+    // Ajouter le nouveau rendez-vous à la liste locale
     setAppointments(prev => [...prev, appointment]);
-    setCurrentView('list'); // Rediriger vers la liste après la réservation
+    // Déclencher un refresh pour recharger depuis l'API
+    setRefreshTrigger(prev => prev + 1);
+    // Rediriger vers la liste après la réservation
+    setCurrentView('list');
   };
 
   const handleBackToHome = () => {
@@ -27,7 +53,10 @@ function App() {
   };
 
   const handleDeleteAppointment = (appointmentId) => {
+    // Supprimer de la liste locale
     setAppointments(prev => prev.filter(apt => apt.id !== appointmentId));
+    // Déclencher un refresh
+    setRefreshTrigger(prev => prev + 1);
   };
 
   const renderCurrentView = () => {
@@ -51,6 +80,7 @@ function App() {
           <AppointmentList
             appointments={appointments}
             onDeleteAppointment={handleDeleteAppointment}
+            refreshTrigger={refreshTrigger}
           />
         );
       default:
@@ -82,7 +112,7 @@ function App() {
             >
               📋 Mes rendez-vous ({appointments.length})
             </button>
-            {currentView === 'list' && appointments.length > 0 && (
+            {currentView === 'list' && (
               <button
                 className="nav-button new-appointment"
                 onClick={() => setCurrentView('home')}

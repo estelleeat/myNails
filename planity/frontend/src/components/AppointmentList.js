@@ -1,8 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../css/AppointmentList.css';
 
-function AppointmentList({ appointments, onDeleteAppointment }) {
+function AppointmentList({ appointments, onDeleteAppointment, refreshTrigger }) {
   const [filter, setFilter] = useState('all');
+  const [loading, setLoading] = useState(false);
+  const [allAppointments, setAllAppointments] = useState(appointments || []);
+
+  // Configuration de l'API
+  const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+
+  // Charger les rendez-vous depuis l'API si nécessaire
+  useEffect(() => {
+    if (appointments && appointments.length > 0) {
+      setAllAppointments(appointments);
+    } else {
+      fetchAppointments();
+    }
+  }, [appointments, refreshTrigger]);
+
+  const fetchAppointments = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}/appointments`);
+      if (!response.ok) {
+        throw new Error('Erreur lors du chargement des rendez-vous');
+      }
+      const data = await response.json();
+      setAllAppointments(data);
+    } catch (error) {
+      console.error('Erreur:', error);
+      // Garder les appointments passés en props si l'API ne fonctionne pas
+      setAllAppointments(appointments || []);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -41,7 +73,36 @@ function AppointmentList({ appointments, onDeleteAppointment }) {
     return appointmentDate > new Date();
   };
 
-  const filteredAppointments = appointments.filter(appointment => {
+  const handleDeleteAppointment = async (appointmentId) => {
+    if (!window.confirm('Êtes-vous sûr de vouloir annuler ce rendez-vous ?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/appointments/${appointmentId}`, {
+        method: 'DELETE'
+      });
+
+      if (!response.ok) {
+        throw new Error('Erreur lors de la suppression');
+      }
+
+      // Mettre à jour l'état local
+      setAllAppointments(prev => prev.filter(apt => apt.id !== appointmentId));
+      
+      // Appeler le callback parent si fourni
+      if (onDeleteAppointment) {
+        onDeleteAppointment(appointmentId);
+      }
+
+      alert('✅ Rendez-vous annulé avec succès');
+    } catch (error) {
+      console.error('Erreur:', error);
+      alert('❌ Erreur lors de l\'annulation du rendez-vous');
+    }
+  };
+
+  const filteredAppointments = allAppointments.filter(appointment => {
     if (filter === 'upcoming') {
       return isUpcoming(appointment.date, appointment.time);
     }
@@ -57,7 +118,18 @@ function AppointmentList({ appointments, onDeleteAppointment }) {
     return dateA - dateB;
   });
 
-  if (appointments.length === 0) {
+  if (loading) {
+    return (
+      <div className="appointment-list-container">
+        <div className="loading-container">
+          <div className="loading-spinner">💅</div>
+          <p>Chargement de vos rendez-vous...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (allAppointments.length === 0) {
     return (
       <div className="appointment-list-container">
         <div className="empty-state">
@@ -81,19 +153,19 @@ function AppointmentList({ appointments, onDeleteAppointment }) {
             className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
             onClick={() => setFilter('all')}
           >
-            Tous ({appointments.length})
+            Tous ({allAppointments.length})
           </button>
           <button
             className={`filter-btn ${filter === 'upcoming' ? 'active' : ''}`}
             onClick={() => setFilter('upcoming')}
           >
-            À venir ({appointments.filter(apt => isUpcoming(apt.date, apt.time)).length})
+            À venir ({allAppointments.filter(apt => isUpcoming(apt.date, apt.time)).length})
           </button>
           <button
             className={`filter-btn ${filter === 'past' ? 'active' : ''}`}
             onClick={() => setFilter('past')}
           >
-            Passés ({appointments.filter(apt => !isUpcoming(apt.date, apt.time)).length})
+            Passés ({allAppointments.filter(apt => !isUpcoming(apt.date, apt.time)).length})
           </button>
         </div>
       </div>
@@ -120,10 +192,10 @@ function AppointmentList({ appointments, onDeleteAppointment }) {
                     <h3 className="client-name">{appointment.name}</h3>
                   </div>
                   
-                  {onDeleteAppointment && upcoming && (
+                  {upcoming && (
                     <button
                       className="delete-btn"
-                      onClick={() => onDeleteAppointment(appointment.id)}
+                      onClick={() => handleDeleteAppointment(appointment.id)}
                       title="Annuler le rendez-vous"
                     >
                       ×
@@ -162,6 +234,16 @@ function AppointmentList({ appointments, onDeleteAppointment }) {
                       <div>
                         <span className="detail-label">Téléphone:</span>
                         <div className="detail-value">{appointment.phone}</div>
+                      </div>
+                    </div>
+                  )}
+
+                  {appointment.prothesiste && (
+                    <div className="detail-item">
+                      <span className="detail-icon">👩‍🎨</span>
+                      <div>
+                        <span className="detail-label">Prothésiste:</span>
+                        <div className="detail-value">{appointment.prothesiste.name}</div>
                       </div>
                     </div>
                   )}

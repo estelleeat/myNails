@@ -1,7 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../css/AppointmentForm.css';
 
 function AppointmentForm({ onAddAppointment, selectedProthesiste, onBack }) {
+  const [formData, setFormData] = useState({
+    name: '',
+    phone: '',
+    date: '',
+    time: '',
+    service: 'manicure'
+  });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [services, setServices] = useState([]);
+
+  // Configuration de l'API
+  const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+
   // Vérifier si une prothésiste est sélectionnée
   if (!selectedProthesiste) {
     return (
@@ -17,24 +32,29 @@ function AppointmentForm({ onAddAppointment, selectedProthesiste, onBack }) {
     );
   }
 
-  const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    date: '',
-    time: '',
-    service: 'manicure'
-  });
+  useEffect(() => {
+    fetchServices();
+  }, []);
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errors, setErrors] = useState({});
-
-  const services = [
-    { value: 'manicure', label: '💅 Manucure Classique' },
-    { value: 'pedicure', label: '🦶 Pédicure' },
-    { value: 'gel', label: '✨ Pose Gel' },
-    { value: 'design', label: '🎨 Nail Art' },
-    { value: 'french', label: '🤍 French Manucure' }
-  ];
+  const fetchServices = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/services`);
+      if (!response.ok) {
+        throw new Error('Erreur lors du chargement des services');
+      }
+      const data = await response.json();
+      setServices(data);
+    } catch (err) {
+      // Fallback avec des services statiques
+      setServices([
+        { code: 'manicure', name: '💅 Manucure Classique' },
+        { code: 'pedicure', name: '🦶 Pédicure' },
+        { code: 'gel', name: '✨ Pose Gel' },
+        { code: 'design', name: '🎨 Nail Art' },
+        { code: 'french', name: '🤍 French Manucure' }
+      ]);
+    }
+  };
 
   const validateForm = () => {
     const newErrors = {};
@@ -77,15 +97,36 @@ function AppointmentForm({ onAddAppointment, selectedProthesiste, onBack }) {
 
     setIsSubmitting(true);
     
-    // Simulation d'un délai d'envoi
-    setTimeout(() => {
-      onAddAppointment({ 
-        ...formData, 
-        id: Date.now(),
-        status: 'confirmé',
-        prothesiste: selectedProthesiste
+    try {
+      const appointmentData = {
+        name: formData.name.trim(),
+        phone: formData.phone.trim(),
+        date: formData.date,
+        time: formData.time,
+        service: formData.service,
+        prothesisteId: selectedProthesiste.id,
+        notes: ''
+      };
+
+      const response = await fetch(`${API_BASE_URL}/appointments`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(appointmentData)
       });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Erreur lors de la création du rendez-vous');
+      }
+
+      const result = await response.json();
       
+      // Appeler le callback parent avec les données du rendez-vous
+      onAddAppointment(result.appointment);
+      
+      // Réinitialiser le formulaire
       setFormData({
         name: '',
         phone: '',
@@ -94,11 +135,16 @@ function AppointmentForm({ onAddAppointment, selectedProthesiste, onBack }) {
         service: 'manicure'
       });
       setErrors({});
-      setIsSubmitting(false);
       
       // Message de succès
       alert(`🎉 Rendez-vous confirmé avec ${selectedProthesiste.name} !`);
-    }, 1000);
+      
+    } catch (error) {
+      console.error('Erreur:', error);
+      alert(`❌ Erreur: ${error.message}`);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (field, value) => {
@@ -131,7 +177,7 @@ function AppointmentForm({ onAddAppointment, selectedProthesiste, onBack }) {
 
       <h2 className="form-title">✨ Réserver avec {selectedProthesiste.name.split(' ')[0]}</h2>
 
-      <div className="appointment-form">
+      <form className="appointment-form" onSubmit={handleSubmit}>
         <div className="form-group">
           <label className="form-label">Nom complet *</label>
           <input
@@ -140,6 +186,7 @@ function AppointmentForm({ onAddAppointment, selectedProthesiste, onBack }) {
             value={formData.name}
             onChange={(e) => handleChange('name', e.target.value)}
             placeholder="Entrez votre nom"
+            required
           />
           {errors.name && <span className="error-message">{errors.name}</span>}
         </div>
@@ -152,6 +199,7 @@ function AppointmentForm({ onAddAppointment, selectedProthesiste, onBack }) {
             value={formData.phone}
             onChange={(e) => handleChange('phone', e.target.value)}
             placeholder="06 12 34 56 78"
+            required
           />
           {errors.phone && <span className="error-message">{errors.phone}</span>}
         </div>
@@ -164,15 +212,15 @@ function AppointmentForm({ onAddAppointment, selectedProthesiste, onBack }) {
             onChange={(e) => handleChange('service', e.target.value)}
           >
             {services.map(service => (
-              <option key={service.value} value={service.value}>
-                {service.label}
+              <option key={service.code} value={service.code}>
+                {service.name}
               </option>
             ))}
           </select>
           <div className="services-info">
             <p>Services proposés par {selectedProthesiste.name.split(' ')[0]} :</p>
             <div className="available-services">
-              {selectedProthesiste.services.map((service, index) => (
+              {selectedProthesiste.services && selectedProthesiste.services.map((service, index) => (
                 <span key={index} className="service-badge">{service}</span>
               ))}
             </div>
@@ -188,6 +236,7 @@ function AppointmentForm({ onAddAppointment, selectedProthesiste, onBack }) {
               value={formData.date}
               onChange={(e) => handleChange('date', e.target.value)}
               min={new Date().toISOString().split('T')[0]}
+              required
             />
             {errors.date && <span className="error-message">{errors.date}</span>}
           </div>
@@ -201,19 +250,20 @@ function AppointmentForm({ onAddAppointment, selectedProthesiste, onBack }) {
               onChange={(e) => handleChange('time', e.target.value)}
               min="09:00"
               max="18:00"
+              required
             />
             {errors.time && <span className="error-message">{errors.time}</span>}
           </div>
         </div>
 
         <button
+          type="submit"
           className={`form-button ${isSubmitting ? 'submitting' : ''}`}
-          onClick={handleSubmit}
           disabled={isSubmitting}
         >
           {isSubmitting ? '⏳ Réservation en cours...' : `💅 Réserver avec ${selectedProthesiste.name.split(' ')[0]}`}
         </button>
-      </div>
+      </form>
 
       <p className="form-help">
         📞 Besoin d'aide ? Appelez-nous au 01 23 45 67 89
