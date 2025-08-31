@@ -1,3 +1,9 @@
+-- Ajoutez ces lignes AVANT vos insertions si les colonnes n'existent pas déjà
+ALTER TABLE services ADD COLUMN description TEXT;
+ALTER TABLE prothesistes ADD COLUMN email VARCHAR(255);
+ALTER TABLE prothesiste_services ADD COLUMN custom_price DECIMAL(8,2) NULL;
+ALTER TABLE prothesiste_services ADD COLUMN custom_duration INT NULL;
+
 -- Insertion de plus de prothésistes pour une démonstration complète
 INSERT INTO prothesistes (name, specialite, experience, photo, description, rating, disponibilite) VALUES
 ('Léa Moreau', 'Extensions & Nail Art', '6 ans d\'expérience', '💎', 'Créatrice de looks uniques avec des extensions sur-mesure et du nail art sophistiqué', 4.9, 'Disponible aujourd\'hui'),
@@ -11,47 +17,47 @@ INSERT INTO prothesistes (name, specialite, experience, photo, description, rati
 
 -- Liaisons supplémentaires prothésiste-services
 -- Léa Moreau (id: 4)
-INSERT INTO prothesiste_services (prothesiste_id, service_id) VALUES
+INSERT IGNORE INTO prothesiste_services (prothesiste_id, service_id) VALUES
 (4, (SELECT id FROM services WHERE code = 'extensions')),
 (4, (SELECT id FROM services WHERE code = 'design')),
 (4, (SELECT id FROM services WHERE code = 'gel'));
 
 -- Camille Blanc (id: 5)
-INSERT INTO prothesiste_services (prothesiste_id, service_id) VALUES
+INSERT IGNORE INTO prothesiste_services (prothesiste_id, service_id) VALUES
 (5, (SELECT id FROM services WHERE code = 'french')),
 (5, (SELECT id FROM services WHERE code = 'manicure'));
 
 -- Jade Laurent (id: 6)
-INSERT INTO prothesiste_services (prothesiste_id, service_id) VALUES
+INSERT IGNORE INTO prothesiste_services (prothesiste_id, service_id) VALUES
 (6, (SELECT id FROM services WHERE code = 'gel')),
 (6, (SELECT id FROM services WHERE code = 'manicure')),
 (6, (SELECT id FROM services WHERE code = 'extensions'));
 
 -- Nina Petit (id: 7)
-INSERT INTO prothesiste_services (prothesiste_id, service_id) VALUES
+INSERT IGNORE INTO prothesiste_services (prothesiste_id, service_id) VALUES
 (7, (SELECT id FROM services WHERE code = 'design')),
 (7, (SELECT id FROM services WHERE code = 'gel')),
 (7, (SELECT id FROM services WHERE code = 'french'));
 
 -- Sophie Martin (id: 8)
-INSERT INTO prothesiste_services (prothesiste_id, service_id) VALUES
+INSERT IGNORE INTO prothesiste_services (prothesiste_id, service_id) VALUES
 (8, (SELECT id FROM services WHERE code = 'pedicure')),
 (8, (SELECT id FROM services WHERE code = 'manicure'));
 
 -- Chloé Bernard (id: 9)
-INSERT INTO prothesiste_services (prothesiste_id, service_id) VALUES
+INSERT IGNORE INTO prothesiste_services (prothesiste_id, service_id) VALUES
 (9, (SELECT id FROM services WHERE code = 'extensions')),
 (9, (SELECT id FROM services WHERE code = 'french')),
 (9, (SELECT id FROM services WHERE code = 'gel'));
 
 -- Manon Dubois (id: 10)
-INSERT INTO prothesiste_services (prothesiste_id, service_id) VALUES
+INSERT IGNORE INTO prothesiste_services (prothesiste_id, service_id) VALUES
 (10, (SELECT id FROM services WHERE code = 'gel')),
 (10, (SELECT id FROM services WHERE code = 'design')),
 (10, (SELECT id FROM services WHERE code = 'manicure'));
 
 -- Océane Roux (id: 11)
-INSERT INTO prothesiste_services (prothesiste_id, service_id) VALUES
+INSERT IGNORE INTO prothesiste_services (prothesiste_id, service_id) VALUES
 (11, (SELECT id FROM services WHERE code = 'manicure')),
 (11, (SELECT id FROM services WHERE code = 'french'));
 

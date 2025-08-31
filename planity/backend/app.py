@@ -10,9 +10,13 @@ from typing import Optional, List, Dict
 from functools import wraps
 import jwt
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://username:password@localhost/nails_rdv'
+app.config['SQLALCHEMY_DATABASE_URI'] = (
+    f"mysql://{os.getenv('DB_USER')}:{os.getenv('DB_PASS')}@localhost/{os.getenv('DB_NAME')}"
+)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-secret-key-change-in-production')
 app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY', 'jwt-secret-key-change-in-production')

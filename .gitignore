@@ -1,2 +1,3 @@
 sr/gnc.env
-frontend/node_modules/
+planity/frontend/node_modules
+planity/backend/.env

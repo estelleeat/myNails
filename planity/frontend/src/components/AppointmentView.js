@@ -482,4 +482,38 @@ const ProfileView = ({ prothesiste }) => {
               <div className="info-label">Téléphone</div>
               <div className="info-value">{prothesiste?.phone || 'Non renseigné'}</div>
             </div>
-            
+            <div className="info-item">
+              <div className="info-label">Adresse</div>
+              <div className="info-value">{prothesiste?.address || 'Non renseignée'}</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="profile-section" style={{ marginTop: '2rem' }}>
+          <h4 style={{ marginBottom: '1rem', color: '#333' }}>Statistiques</h4>
+          <div className="profile-stats">
+            <div className="stat-item">
+              <div className="stat-label">Note moyenne</div>
+              <div className="stat-value">
+                {averageRating.toFixed(1)} ⭐
+              </div>
+            </div>
+            <div className="stat-item">
+              <div className="stat-label">Avis reçus</div>
+              <div className="stat-value">
+                {totalReviews}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export {
+  AppointmentsView,
+  AvailabilityView,
+  ServicesView,
+  ProfileView
+};

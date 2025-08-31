@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { Routes, Route, BrowserRouter, Link } from 'react-router-dom';
+import { AuthProvider } from './components/AuthContext'; // <-- Ajoute ceci
 import LandingPage from './components/LandingPage';
 import AppointmentForm from './components/AppointmentForm';
 import AppointmentList from './components/AppointmentList';
+import ProthesisteDashboard from './components/ProthesistDashboard';
 import './App.css';
 
 function App() {
@@ -104,46 +107,53 @@ function App() {
   };
 
   return (
-    <div className="App">
-      {/* Navigation simplifiée - s'affiche seulement si pas sur la landing page */}
-      {currentView !== 'landing' && (
-        <nav className="app-nav">
-          <div className="nav-content">
-            <button
-              className="nav-btn brand-btn"
-              onClick={() => setCurrentView('landing')}
-            >
-              ✨ NailSpace
-            </button>
-            
-            <div className="nav-actions">
-              {user && (
-                <>
-                  <button
-                    className={`nav-btn ${currentView === 'list' ? 'active' : ''}`}
-                    onClick={() => setCurrentView('list')}
-                  >
-                    Mes RDV ({appointments.length})
-                  </button>
-                  <span className="user-info">👋 {user.name}</span>
-                  <button 
-                    className="nav-btn logout-btn"
-                    onClick={handleLogout}
-                  >
-                    Déconnexion
-                  </button>
-                </>
-              )}
+    <BrowserRouter>
+      <AuthProvider> {/* <-- Ajoute ce wrapper */}
+        <div className="App">
+          {/* Navigation toujours affichée */}
+          <nav className="app-nav">
+            <div className="nav-content">
+              <button
+                className="nav-btn brand-btn"
+                onClick={() => setCurrentView('landing')}
+              >
+                ✨ NailSpace
+              </button>
+              <div className="nav-actions">
+                {user && (
+                  <>
+                    <button
+                      className={`nav-btn ${currentView === 'list' ? 'active' : ''}`}
+                      onClick={() => setCurrentView('list')}
+                    >
+                      Mes RDV ({appointments.length})
+                    </button>
+                    <span className="user-info">👋 {user.name}</span>
+                    <button 
+                      className="nav-btn logout-btn"
+                      onClick={handleLogout}
+                    >
+                      Déconnexion
+                    </button>
+                  </>
+                )}
+                {/* Affiche toujours le bouton Dashboard Prothésiste */}
+                <Link to="/pro-dashboard" className="nav-btn">
+                  Dashboard Prothésiste
+                </Link>
+              </div>
             </div>
-          </div>
-        </nav>
-      )}
-
-      {/* Main Content */}
-      <main className="app-main">
-        {renderCurrentView()}
-      </main>
-    </div>
+          </nav>
+          {/* Main Content */}
+          <main className="app-main">
+            <Routes>
+              <Route path="/" element={renderCurrentView()} />
+              <Route path="/pro-dashboard" element={<ProthesisteDashboard />} />
+            </Routes>
+          </main>
+        </div>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 
