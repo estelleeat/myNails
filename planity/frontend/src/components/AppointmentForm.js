@@ -17,21 +17,7 @@ function AppointmentForm({ onAddAppointment, selectedProthesiste, onBack }) {
   // Configuration de l'API
   const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
-  // Vérifier si une prothésiste est sélectionnée
-  if (!selectedProthesiste) {
-    return (
-      <div className="appointment-form-container">
-        <div className="no-prothesiste">
-          <h2>Aucune prothésiste sélectionnée</h2>
-          <p>Veuillez retourner à l'accueil pour choisir une prothésiste.</p>
-          <button className="back-button" onClick={onBack}>
-            ← Retour à l'accueil
-          </button>
-        </div>
-      </div>
-    );
-  }
-
+  // Hook useEffect must be called before any conditional returns
   useEffect(() => {
     fetchServices();
   }, []);
@@ -55,6 +41,21 @@ function AppointmentForm({ onAddAppointment, selectedProthesiste, onBack }) {
       ]);
     }
   };
+
+  // Conditional return after all hooks have been called
+  if (!selectedProthesiste) {
+    return (
+      <div className="appointment-form-container">
+        <div className="no-prothesiste">
+          <h2>Aucune prothésiste sélectionnée</h2>
+          <p>Veuillez retourner à l'accueil pour choisir une prothésiste.</p>
+          <button className="back-button" onClick={onBack}>
+            ← Retour à l'accueil
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const validateForm = () => {
     const newErrors = {};

@@ -1,111 +1,112 @@
-/* AppointmentForm.css */
+/* AppointmentForm.css - Version épurée */
 .appointment-form-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #ffeef8 0%, #f0f9ff 100%);
+  background: #fafafa;
   padding: 2rem;
 }
 
-/* Form Header */
+/* Header du formulaire */
 .form-header {
-  max-width: 800px;
+  max-width: 600px;
   margin: 0 auto 2rem;
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-  flex-wrap: wrap;
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: 1px solid #f3f4f6;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
 }
 
 .back-button {
-  background: white;
-  border: 2px solid #ec4899;
-  color: #ec4899;
-  padding: 0.75rem 1.5rem;
-  border-radius: 12px;
-  font-weight: 600;
+  background: transparent;
+  border: 1px solid #e5e7eb;
+  color: #374151;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 1rem;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
 }
 
 .back-button:hover {
-  background: #ec4899;
-  color: white;
-  transform: translateY(-2px);
+  border-color: #9ca3af;
+  background: #f9fafb;
+  transform: translateY(-1px);
 }
 
 .selected-prothesiste {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
-  background: white;
-  padding: 1.5rem;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-  flex-grow: 1;
-  min-width: 300px;
+  gap: 1rem;
 }
 
 .prothesiste-photo-small {
-  font-size: 3rem;
-  background: linear-gradient(135deg, #ffeef8, #f0f9ff);
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #fef3f2, #f0f9ff);
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 1.5rem;
+  border: 1px solid #f3f4f6;
   flex-shrink: 0;
 }
 
 .prothesiste-details h3 {
-  font-size: 1.3rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #111827;
   margin-bottom: 0.25rem;
-  color: #333;
 }
 
 .prothesiste-details p {
-  color: #ec4899;
-  font-weight: 600;
+  color: #a855f7;
+  font-weight: 500;
   margin-bottom: 0.5rem;
+  font-size: 0.9rem;
 }
 
 .prothesiste-rating-small {
   display: flex;
   gap: 1rem;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
 }
 
 .prothesiste-rating-small span {
-  background: #f8fafc;
+  background: #f9fafb;
   padding: 0.25rem 0.5rem;
   border-radius: 6px;
   font-weight: 500;
+  border: 1px solid #e5e7eb;
 }
 
 .disponibilite-badge {
-  color: #16a34a !important;
+  color: #059669 !important;
+  background: #ecfdf5 !important;
+  border-color: #d1fae5 !important;
 }
 
-/* Form Styles */
+/* Titre du formulaire */
 .form-title {
   text-align: center;
-  font-size: 2.5rem;
-  color: #333;
+  font-size: 2rem;
+  color: #111827;
   margin-bottom: 2rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #ec4899, #8b5cf6);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  letter-spacing: -0.02em;
 }
 
+/* Formulaire épuré */
 .appointment-form {
   max-width: 600px;
   margin: 0 auto;
   background: white;
-  padding: 3rem;
-  border-radius: 24px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  padding: 2rem;
+  border-radius: 16px;
+  border: 1px solid #f3f4f6;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 }
 
 .form-group {
@@ -115,25 +116,25 @@
 .form-label {
   display: block;
   margin-bottom: 0.5rem;
-  font-weight: 600;
+  font-weight: 500;
   color: #374151;
-  font-size: 1rem;
+  font-size: 0.9rem;
 }
 
 .form-input, .form-select {
   width: 100%;
-  padding: 1rem;
-  border: 2px solid #e5e7eb;
-  border-radius: 12px;
-  font-size: 1rem;
-  transition: all 0.3s ease;
+  padding: 0.75rem;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
   background: white;
 }
 
 .form-input:focus, .form-select:focus {
   outline: none;
-  border-color: #ec4899;
-  box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
+  border-color: #a855f7;
+  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
 }
 
 .form-input.error, .form-select.error {
@@ -143,7 +144,7 @@
 
 .error-message {
   color: #ef4444;
-  font-size: 0.875rem;
+  font-size: 0.8rem;
   margin-top: 0.25rem;
   display: block;
   font-weight: 500;
@@ -158,15 +159,16 @@
 .services-info {
   margin-top: 1rem;
   padding: 1rem;
-  background: #f8fafc;
-  border-radius: 12px;
-  border: 1px solid #e2e8f0;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
 }
 
 .services-info p {
   margin-bottom: 0.75rem;
-  color: #64748b;
+  color: #6b7280;
   font-weight: 500;
+  font-size: 0.85rem;
 }
 
 .available-services {
@@ -177,50 +179,92 @@
 
 .service-badge {
   background: white;
-  color: #64748b;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-size: 0.85rem;
+  color: #374151;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
   font-weight: 500;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #d1d5db;
 }
 
 .form-button {
   width: 100%;
-  background: linear-gradient(135deg, #ec4899, #8b5cf6);
+  background: #111827;
   color: white;
   border: none;
-  padding: 1.25rem 2rem;
-  border-radius: 16px;
-  font-size: 1.2rem;
-  font-weight: 700;
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   margin-top: 1rem;
-  box-shadow: 0 10px 25px rgba(236, 72, 153, 0.3);
 }
 
 .form-button:hover:not(:disabled) {
-  transform: translateY(-3px);
-  box-shadow: 0 15px 35px rgba(236, 72, 153, 0.4);
+  background: #374151;
+  transform: translateY(-1px);
 }
 
 .form-button:disabled {
-  opacity: 0.7;
+  opacity: 0.6;
   cursor: not-allowed;
   transform: none;
 }
 
 .form-button.submitting {
-  background: linear-gradient(135deg, #9ca3af, #6b7280);
+  background: #6b7280;
 }
 
 .form-help {
   text-align: center;
-  margin-top: 2rem;
-  color: #64748b;
-  font-size: 1rem;
+  margin-top: 1.5rem;
+  color: #6b7280;
+  font-size: 0.9rem;
   font-weight: 500;
+}
+
+/* Section "no-prothesiste" */
+.no-prothesiste {
+  max-width: 500px;
+  margin: 4rem auto;
+  text-align: center;
+  background: white;
+  padding: 3rem 2rem;
+  border-radius: 16px;
+  border: 1px solid #f3f4f6;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.no-prothesiste h2 {
+  font-size: 1.5rem;
+  color: #111827;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.no-prothesiste p {
+  color: #6b7280;
+  font-size: 1rem;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.no-prothesiste .back-button {
+  background: #111827;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.no-prothesiste .back-button:hover {
+  background: #374151;
+  transform: translateY(-1px);
 }
 
 /* Responsive */
@@ -230,20 +274,22 @@
   }
   
   .form-header {
-    flex-direction: column;
-    align-items: stretch;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
   }
   
   .selected-prothesiste {
-    min-width: auto;
+    flex-direction: column;
+    text-align: center;
+    gap: 0.75rem;
   }
   
   .appointment-form {
-    padding: 2rem 1.5rem;
+    padding: 1.5rem;
   }
   
   .form-title {
-    font-size: 2rem;
+    font-size: 1.5rem;
   }
   
   .form-row {
@@ -252,5 +298,19 @@
   
   .available-services {
     justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-header {
+    padding: 1rem 0.75rem;
+  }
+  
+  .appointment-form {
+    padding: 1rem;
+  }
+  
+  .form-input, .form-select {
+    font-size: 16px; /* Évite le zoom sur iOS */
   }
 }

@@ -1,24 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import HomePage from './components/HomePage';
+import LandingPage from './components/LandingPage';
 import AppointmentForm from './components/AppointmentForm';
 import AppointmentList from './components/AppointmentList';
-import Header from './components/Header';
-import Footer from './components/Footer';
 import './App.css';
 
 function App() {
-  const [currentView, setCurrentView] = useState('home'); // 'home', 'appointment', 'list'
+  const [currentView, setCurrentView] = useState('landing'); // 'landing', 'appointment', 'list'
   const [selectedProthesiste, setSelectedProthesiste] = useState(null);
   const [appointments, setAppointments] = useState([]);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [user, setUser] = useState(null);
 
   // Configuration de l'API
   const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
-  // Charger les rendez-vous au démarrage
+  // Charger les rendez-vous au démarrage si utilisateur connecté
   useEffect(() => {
-    fetchAppointments();
-  }, []);
+    if (user) {
+      fetchAppointments();
+    }
+  }, [user]);
 
   const fetchAppointments = async () => {
     try {
@@ -29,8 +30,19 @@ function App() {
       }
     } catch (error) {
       console.error('Erreur lors du chargement des rendez-vous:', error);
-      // Continuer avec un tableau vide si l'API n'est pas disponible
     }
+  };
+
+  const handleLogin = (userData) => {
+    setUser(userData);
+    // Pas de redirection automatique, l'utilisateur reste sur la landing page
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    setCurrentView('landing');
+    setSelectedProthesiste(null);
+    setAppointments([]);
   };
 
   const handleSelectProthesiste = (prothesiste) => {
@@ -39,32 +51,29 @@ function App() {
   };
 
   const handleAddAppointment = (appointment) => {
-    // Ajouter le nouveau rendez-vous à la liste locale
     setAppointments(prev => [...prev, appointment]);
-    // Déclencher un refresh pour recharger depuis l'API
     setRefreshTrigger(prev => prev + 1);
-    // Rediriger vers la liste après la réservation
     setCurrentView('list');
   };
 
-  const handleBackToHome = () => {
-    setCurrentView('home');
+  const handleBackToLanding = () => {
+    setCurrentView('landing');
     setSelectedProthesiste(null);
   };
 
   const handleDeleteAppointment = (appointmentId) => {
-    // Supprimer de la liste locale
     setAppointments(prev => prev.filter(apt => apt.id !== appointmentId));
-    // Déclencher un refresh
     setRefreshTrigger(prev => prev + 1);
   };
 
   const renderCurrentView = () => {
     switch (currentView) {
-      case 'home':
+      case 'landing':
         return (
-          <HomePage 
+          <LandingPage 
             onSelectProthesiste={handleSelectProthesiste}
+            onLogin={handleLogin}
+            user={user}
           />
         );
       case 'appointment':
@@ -72,7 +81,7 @@ function App() {
           <AppointmentForm
             selectedProthesiste={selectedProthesiste}
             onAddAppointment={handleAddAppointment}
-            onBack={handleBackToHome}
+            onBack={handleBackToLanding}
           />
         );
       case 'list':
@@ -85,8 +94,10 @@ function App() {
         );
       default:
         return (
-          <HomePage 
+          <LandingPage 
             onSelectProthesiste={handleSelectProthesiste}
+            onLogin={handleLogin}
+            user={user}
           />
         );
     }
@@ -94,42 +105,44 @@ function App() {
 
   return (
     <div className="App">
-      <Header />
-      
-      {/* Navigation */}
-      {currentView !== 'home' && (
-        <div className="navigation">
-          <div className="nav-container">
+      {/* Navigation simplifiée - s'affiche seulement si pas sur la landing page */}
+      {currentView !== 'landing' && (
+        <nav className="app-nav">
+          <div className="nav-content">
             <button
-              className={`nav-button ${currentView === 'home' ? 'active' : ''}`}
-              onClick={() => setCurrentView('home')}
+              className="nav-btn brand-btn"
+              onClick={() => setCurrentView('landing')}
             >
-              🏠 Accueil
+              ✨ NailSpace
             </button>
-            <button
-              className={`nav-button ${currentView === 'list' ? 'active' : ''}`}
-              onClick={() => setCurrentView('list')}
-            >
-              📋 Mes rendez-vous ({appointments.length})
-            </button>
-            {currentView === 'list' && (
-              <button
-                className="nav-button new-appointment"
-                onClick={() => setCurrentView('home')}
-              >
-                ➕ Nouveau rendez-vous
-              </button>
-            )}
+            
+            <div className="nav-actions">
+              {user && (
+                <>
+                  <button
+                    className={`nav-btn ${currentView === 'list' ? 'active' : ''}`}
+                    onClick={() => setCurrentView('list')}
+                  >
+                    Mes RDV ({appointments.length})
+                  </button>
+                  <span className="user-info">👋 {user.name}</span>
+                  <button 
+                    className="nav-btn logout-btn"
+                    onClick={handleLogout}
+                  >
+                    Déconnexion
+                  </button>
+                </>
+              )}
+            </div>
           </div>
-        </div>
+        </nav>
       )}
 
       {/* Main Content */}
-      <main className="main-content">
+      <main className="app-main">
         {renderCurrentView()}
       </main>
-
-      <Footer />
     </div>
   );
 }

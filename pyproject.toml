@@ -5,8 +5,14 @@ description = "Projet Terraform avec Python"
 authors = ["Votre Nom <email@example.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = ">=3.9,<4.0"
 python-terraform = "^0.10.1"
+mysqlclient = "^2.2.7"
+mysql = "^0.0.3"
+flask = "^3.1.2"
+flask-sqlalchemy = "^3.1.1"
+flask-cors = "^6.0.1"
+python-dotenv = "^1.1.1"
 
 [build-system]
 requires = ["poetry-core"]
